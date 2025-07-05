@@ -12,24 +12,23 @@ import css from "./App.module.css";
 export default function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
   const handleSearch = async (query: string) => {
     setIsLoading(true);
-    setError(false);
+    setHasError(false);
     setSelectedMovie(null);
     setMovies([]);
     try {
       const results = await fetchMovies(query);
-
 
       if (results.length === 0) {
         toast.error("No movies found for your request.");
       }
       setMovies(results);
     } catch {
-      setError(true);
+      setHasError(true);
     } finally {
       setIsLoading(false);
     }
@@ -44,8 +43,8 @@ export default function App() {
       <SearchBar onSubmit={handleSearch} />
       <Toaster />
       {isLoading && <Loader />}
-      {error && <ErrorMessage />}
-      {!isLoading && !error && movies.length > 0 && (
+      {hasError && <ErrorMessage />}
+      {!isLoading && !hasError && movies.length > 0 && (
         <MovieGrid movies={movies} onSelect={setSelectedMovie} />
       )}
       {selectedMovie && (
